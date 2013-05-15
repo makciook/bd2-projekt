@@ -3,11 +3,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
-/*
- * Created by JFormDesigner on Wed May 15 16:04:21 CEST 2013
- */
-
-
 
 /**
  * @author Maciek C
@@ -46,8 +41,11 @@ public class OknoConnection extends JDialog {
         bazunia.setPort(this.addr_port.getText());
         try {
             bazunia.getConnection();
+
             conn_ok.setEnabled(true);
+            JOptionPane.showMessageDialog(null,"Dane połączenia poprawne, można łączyć!");
         } catch(Exception ex) {
+            conn_ok.setEnabled(false);
             JOptionPane.showMessageDialog(null,"Błąd podczas nawiązywania połączenia:\n"+ex.getMessage());
         }
         finally {  // resetujemy dane połączenia, to był tylko test, odpalamy z powrotem poprzednie połączenie
@@ -77,7 +75,8 @@ public class OknoConnection extends JDialog {
         bazunia.setPort(this.addr_port.getText());
         try {
             bazunia.getConnection();
-            conn_ok.setEnabled(true);
+            this.setVisible(false);
+            this.dispose();
         } catch(Exception ex) {
             JOptionPane.showMessageDialog(null,"Błąd podczas nawiązywania połączenia:\n"+ex.getMessage());
         }

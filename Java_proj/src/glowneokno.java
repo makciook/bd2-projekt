@@ -16,12 +16,13 @@ import javax.swing.border.*;
 public class glowneokno extends JFrame {
     private JDBC baza;
 
-
     public glowneokno() {
         setTitle("Magazyn BD2 2013");
         initComponents();
         this.setVisible(true);
-        baza = new JDBC("","","localhost","3306","bd2-baza");
+        //baza = new JDBC("","","localhost","3306","bd2-baza");
+        baza = new JDBC("bd2", "bd2", "46.167.245.192", "3306", "bd2-baza");
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     private void m_DB_setDataActionPerformed(ActionEvent e) {
@@ -72,7 +73,7 @@ public class glowneokno extends JFrame {
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         scrollPane1 = new JScrollPane();
-        table1 = new JTable();
+        mainTable = new JTable();
         buttonBar = new JPanel();
         okButton = new JButton();
         cancelButton = new JButton();
@@ -208,7 +209,7 @@ public class glowneokno extends JFrame {
 
                 //======== scrollPane1 ========
                 {
-                    scrollPane1.setViewportView(table1);
+                    scrollPane1.setViewportView(mainTable);
                 }
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
@@ -282,7 +283,7 @@ public class glowneokno extends JFrame {
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JScrollPane scrollPane1;
-    private JTable table1;
+    private JTable mainTable;
     private JPanel buttonBar;
     private JButton okButton;
     private JButton cancelButton;

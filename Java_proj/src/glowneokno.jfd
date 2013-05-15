@@ -16,7 +16,7 @@ new FormModel {
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTable" ) {
-							name: "table1"
+							name: "mainTable"
 						} )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
