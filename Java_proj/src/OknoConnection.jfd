@@ -1,0 +1,100 @@
+JFDML JFormDesigner: "5.1.1.0.120" Java: "1.7.0_09" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"title": "Ustaw dane połączenia"
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {par l {seq l {comp label2:::p::p, space s:::p, comp addr_passwd:::p:115:p}, seq l {par l {comp label1::l:p::p, comp label3::l:p::p, comp label4::l:p::p}, space s:::p, par l {par l:::p {comp addr_username::::113:x, comp addr_dbname::::113:x}, seq {comp label6:::p::p, space :::p, comp addr_host:::p:113:p, space :::p, comp label5:::p:9:p, space :::p, comp addr_port:::p:65:p}}}}, space ::60:x}, seq t {space :0:226:x, comp testujButton:::p:85:p, space :p:83:p}}}}"
+					"$verticalGroup": "par l {seq l {space :p:11:p, par b {comp label1::b:p::p, comp addr_username::b:p::p}, space u:::p, par b {comp label2::b:p::p, comp addr_passwd::b:p::p}, space u:::p, par b {comp label3::b:p::p, comp label6::b:p::p, comp addr_host::b:p::p, comp label5::b:p::p, comp addr_port::b:p::p}, space u:::p, par b {comp label4::b:p::p, comp addr_dbname::b:p::p}, space ::74:x, comp testujButton:::p::p}}"
+				} ) {
+					name: "contentPanel"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "Username"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "Password"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label3"
+						"text": "Address"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label4"
+						"text": "DB name"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "addr_username"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "addr_host"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "addr_dbname"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label5"
+						"text": ":"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "addr_port"
+					} )
+					add( new FormComponent( "javax.swing.JPasswordField" ) {
+						name: "addr_passwd"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "testujButton"
+						"text": "Testuj"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "testujButtonActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label6"
+						"text": "jdbc:mysql://"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0, 0:1.0, 80, 80"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+				} ) {
+					name: "buttonBar"
+					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "conn_ok"
+						"text": "OK"
+						"enabled": false
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "conn_okActionPerformed", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+						"gridy": 0
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "conn_cancel"
+						"text": "Cancel"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "conn_cancelActionPerformed", true ) )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 3
+						"gridy": 0
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 440, 335 )
+		} )
+	}
+}
