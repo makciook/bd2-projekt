@@ -8,8 +8,6 @@ import javax.swing.border.*;
  * Created by JFormDesigner on Wed May 15 15:09:54 CEST 2013
  */
 
-
-
 /**
  * @author unknown
  */
