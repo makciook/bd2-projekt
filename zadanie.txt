@@ -1,2 +1,0 @@
-5.  Ewidencja magazynowa
-	Co jest, ile powinno byæ, co jest zamówione, co zamówiæ, co wstrzymaæ.
