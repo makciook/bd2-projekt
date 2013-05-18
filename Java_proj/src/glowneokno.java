@@ -4,13 +4,7 @@ import java.sql.SQLException;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
-/*
- * Created by JFormDesigner on Wed May 15 15:09:54 CEST 2013
- */
 
-/**
- * @author unknown
- */
 public class glowneokno extends JFrame {
     private JDBC baza;
 
@@ -21,18 +15,26 @@ public class glowneokno extends JFrame {
         //baza = new JDBC("","","localhost","3306","bd2-baza");
         baza = new JDBC("bd2", "bd2", "46.167.245.192", "3306", "bd2-baza");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        try {
+            baza.executeQuery("SELECT * FROM dostawca");
+            this.mainTable.setModel(baza.getAsTableModel());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void m_DB_setDataActionPerformed(ActionEvent e) {
         OknoConnection oknocon = new OknoConnection(this, baza);
         oknocon.setVisible(true);
-
     }
 
     private void m_DB_connectActionPerformed(ActionEvent e) {
         try {
             baza.getConnection();
+            JOptionPane.showMessageDialog(null,"Połączono!");
         } catch(SQLException ex) {
+            JOptionPane.showMessageDialog(null,"Błąd podczas łączenia\nSprawdź dane i spróbuj ponownie\n"+ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -40,7 +42,9 @@ public class glowneokno extends JFrame {
     private void m_DB_disconnectActionPerformed(ActionEvent e) {
         try {
             baza.closeConnection();
+            JOptionPane.showMessageDialog(null,"Rozłączono poprawnie");
         } catch(SQLException ex) {
+            JOptionPane.showMessageDialog(null,"Błąd podczas rozłączania:\n"+ex.getMessage());
             ex.printStackTrace();
         }
     }

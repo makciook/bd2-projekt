@@ -4,9 +4,7 @@ import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
 
-/**
- * @author Maciek C
- */
+
 public class OknoConnection extends JDialog {
     private JDBC bazunia;
 
