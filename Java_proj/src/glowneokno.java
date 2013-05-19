@@ -54,6 +54,10 @@ public class glowneokno extends JFrame {
         // Generated using JFormDesigner Evaluation license - Maciek C
         menuBar1 = new JMenuBar();
         m_File = new JMenu();
+        menuItem1 = new JMenuItem();
+        menuItem2 = new JMenuItem();
+        menuItem3 = new JMenuItem();
+        menuItem4 = new JMenuItem();
         m_DB = new JMenu();
         m_DB_setData = new JMenuItem();
         m_DB_connect = new JMenuItem();
@@ -90,6 +94,22 @@ public class glowneokno extends JFrame {
             //======== m_File ========
             {
                 m_File.setText("Plik");
+
+                //---- menuItem1 ----
+                menuItem1.setText("Zapisz parametry po\u0142\u0105czenia");
+                m_File.add(menuItem1);
+
+                //---- menuItem2 ----
+                menuItem2.setText("Wczytaj parametry po\u0142\u0105czenia");
+                m_File.add(menuItem2);
+
+                //---- menuItem3 ----
+                menuItem3.setText("Zapisz widok do pliku HTML");
+                m_File.add(menuItem3);
+
+                //---- menuItem4 ----
+                menuItem4.setText("Zako\u0144cz");
+                m_File.add(menuItem4);
             }
             menuBar1.add(m_File);
 
@@ -264,6 +284,10 @@ public class glowneokno extends JFrame {
     // Generated using JFormDesigner Evaluation license - Maciek C
     private JMenuBar menuBar1;
     private JMenu m_File;
+    private JMenuItem menuItem1;
+    private JMenuItem menuItem2;
+    private JMenuItem menuItem3;
+    private JMenuItem menuItem4;
     private JMenu m_DB;
     private JMenuItem m_DB_setData;
     private JMenuItem m_DB_connect;

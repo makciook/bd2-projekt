@@ -11,7 +11,6 @@ import java.sql.*;
 import java.util.Vector;
 
 public class JDBC {
-    private boolean usedMonitor;
     private static Connection connection;
     private Statement stmt;
     private ResultSet rs;
@@ -20,7 +19,6 @@ public class JDBC {
     private String login;// = "root";
     private String haslo;// = ""
     private String address,port, name;
-    boolean isUsed() { return usedMonitor; }
 
     public JDBC(String login_, String haslo_, String address_, String port_, String name_) { connection = null; login=login_; haslo=haslo_; address = address_; port=port_; name = name_; }
     public JDBC() { connection = null; }
