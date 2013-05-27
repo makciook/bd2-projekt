@@ -10,7 +10,7 @@ new FormModel {
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp scrollPane1:::p:724:p, space :p:29:p, par l {comp addButton:::::x, comp editButton:::::x, comp deleteButton_Elem::l::116:x, comp deleteButton_Zam::l::116:x, comp viewButton::l::116:x, comp editButton_Elem::l::116:x, comp addButon_Elem::l::116:x}}, seq l {comp zamowieniaBox:::p:218:p, space u:::p, comp returnButton:::p::p, space s:::p, comp label1:::p::p, space :::p, comp fromTextField:::p:80:p, space :::p, comp label2:::p::p, space :::p, comp toTextField:::p:82:p, space s:::p, comp filterButton:::p:91:p, space u:::p, comp button1:::p:105:p}}, space :p:0:p}}"
-					"$verticalGroup": "par l {seq t {space :::x, par b {comp zamowieniaBox::b:p::p, comp returnButton::b:p::p, comp label1::b:p::p, comp label2::b:p::p, comp fromTextField::b:p::p, comp toTextField::b:p::p, comp filterButton::b:p::p, comp button1::b:p::p}, space s:::p, par l {seq {comp viewButton:::p::p, space :::p, comp deleteButton_Zam:::p::p, space :::p, comp editButton:::p::p, space :::p, comp addButton:::p::p, space :::p, comp deleteButton_Elem:::p::p, space u:::p, comp editButton_Elem:::p::p, space :::p, comp addButon_Elem:::p::p}, comp scrollPane1::l:p:587:p}, space :p:17:p}}"
+					"$verticalGroup": "par l {seq t {space :::x, par b {comp zamowieniaBox::b:p::p, comp returnButton::b:p::p, comp label1::b:p::p, comp label2::b:p::p, comp fromTextField::b:p::p, comp toTextField::b:p::p, comp filterButton::b:p::p, comp button1::b:p::p}, space s:::p, par l {seq {comp viewButton:::p::p, space :::p, comp deleteButton_Zam:::p::p, space :::p, comp editButton:::p::p, space :::p, comp addButton:::p::p, space :::p, comp deleteButton_Elem:::p::p, space :::p, comp editButton_Elem:::p::p, space :::p, comp addButon_Elem:::p::p}, comp scrollPane1::l:p:587:p}, space :p:17:p}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
@@ -32,6 +32,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "addButton"
 						"text": "Dodaj"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "addButtonActionPerformed", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "editButton"
@@ -82,10 +83,12 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "editButton_Elem"
 						"text": "Edytuj"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "editButton_ElemActionPerformed", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "addButon_Elem"
 						"text": "Dodaj"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "addButon_ElemActionPerformed", true ) )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "North"

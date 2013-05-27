@@ -7,7 +7,7 @@ import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
 import javax.swing.table.AbstractTableModel;
-
+import javax.swing.table.DefaultTableModel;
 
 
 public class glowneokno extends JFrame {
@@ -338,7 +338,7 @@ public class glowneokno extends JFrame {
     }
 
     private void deleteButtonActionPerformed(ActionEvent e) {
-        Object id = mainTable.getValueAt(mainTable.getSelectedRow(),0);   // get id
+        Object id = mainTable.getValueAt(mainTable.getSelectedRow(), 0);   // get id
         try {
             baza.executeUpdate("DELETE FROM pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" " +
                 " WHERE zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+"_Id ="+id);
@@ -362,7 +362,7 @@ public class glowneokno extends JFrame {
         Object ilosc = mainTable.getValueAt(mainTable.getSelectedRow(), 1);   // get id;
         Object czesci_Id = mainTable.getValueAt(mainTable.getSelectedRow(),2);
         Object zwejid = mainTable.getValueAt(mainTable.getSelectedRow(),0);
-        String q = "DELETE FROM pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" WHERE Ilosc = "+ilosc+" AND czesci_Id = "+czesci_Id+" AND zamowienia_wej_Id = "+zwejid;
+        String q = "DELETE FROM pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" WHERE Ilosc = "+ilosc+" AND czesci_Id = "+czesci_Id+" AND zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+"_Id = "+zwejid;
         try {
             System.out.println(q);
             baza.executeUpdate(q);
@@ -383,9 +383,9 @@ public class glowneokno extends JFrame {
         if(editButton.getText().equals("ZAKONCZ")) {
             editButton.setText("Edytuj");
             String q = "UPDATE zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" SET Data = '"+mainTable.getValueAt(mainTable.getSelectedRow(),1)+"'" +
-                    ", wartosc = "+mainTable.getValueAt(mainTable.getSelectedRow(),2)+"" +
+                    ", wartosc = REPLACE('"+mainTable.getValueAt(mainTable.getSelectedRow(),2)+"', ',', '')" +
                     ", zrealizowane = '"+mainTable.getValueAt(mainTable.getSelectedRow(),3)+"'" +
-                    ", dostawca_Regon = '"+mainTable.getValueAt(mainTable.getSelectedRow(),4)+"'" +
+                    ", "+kl_zam[zamowieniaBox.getSelectedIndex()]+"_Regon = '"+mainTable.getValueAt(mainTable.getSelectedRow(),4)+"'" +
                     " WHERE Id = "+mainTable.getValueAt(mainTable.getSelectedRow(),0);
             System.out.println(q);
             try {
@@ -419,7 +419,6 @@ public class glowneokno extends JFrame {
     }
 
     private void viewButtonActionPerformed(ActionEvent e) {
-        //JTable target = (JTable)e.getSource();
         int row = mainTable.getSelectedRow();
         try {
             String q = "SELECT zw.ID As 'NR zamówienia', pzw.Ilosc AS Ilosc, pzw.czesci_Id AS 'Numer czesci', FORMAT(cz.wartosc*pzw.Ilosc*100,2) AS Wartosc"+
@@ -440,6 +439,124 @@ public class glowneokno extends JFrame {
             tableEnable(false);
         }catch(Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private void editButton_ElemActionPerformed(ActionEvent e) {
+        if(editButton_Elem.getText().equals("ZAKONCZ")) {
+            editButton_Elem.setText("Edytuj");
+            String q = "UPDATE pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" SET Ilosc=" + mainTable.getValueAt(mainTable.getSelectedRow(),1)+
+                    " WHERE zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+"_Id = "+mainTable.getValueAt(mainTable.getSelectedRow(),0)+ "" +
+                    " AND czesci_Id = "+mainTable.getValueAt(mainTable.getSelectedRow(),2);
+            System.out.println(q);
+            try {
+                baza.executeUpdate(q);
+                baza.executeQuery(baza.getLastQuery());
+                baza.getAsTableModel();
+                JOptionPane.showMessageDialog(null,"Poprawnie zmieniono wybrany rekord!");
+            } catch(Exception exx) {
+                JOptionPane.showMessageDialog(null,"Nie udało się zmienić rekordu z nastepującego powodu: "+exx.getMessage());
+                System.out.println(exx.getMessage());
+
+            }
+        }
+        else {
+            editButton_Elem.setText("ZAKONCZ");
+            ArrayList<Integer> al = new ArrayList();
+            al.add(new Integer(1));
+
+            try {
+                baza.executeQuery(baza.getLastQuery());
+                mainTable.setModel(baza.getAsEditableTableModel(al, mainTable.getSelectedRow()));
+            } catch(Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
+    private void addButtonActionPerformed(ActionEvent e) {
+        if(addButton.getText().equals("Dodaj"))
+        {
+            try {
+                ArrayList<Integer> x = new ArrayList();
+                x.add(new Integer(1));
+                x.add(new Integer(3));
+                x.add(new Integer(4));
+                x.add(new Integer(5));
+                baza.executeQuery(baza.getLastQuery());
+                DefaultTableModel tbmodel = (DefaultTableModel)baza.getAsEditableTableModel(x,0);
+                tbmodel.insertRow(0,new Object[]{"","","","","",""});
+                mainTable.setModel(tbmodel);
+                addButton.setText("ZAKONCZ");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        else if(addButton.getText().equals("ZAKONCZ")) {
+            String q="";
+            if(zamowieniaBox.getSelectedIndex()==1)     // wyjsciowe
+                q = "INSERT INTO zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" VALUES(" +
+                        "NULL, '" +
+                        mainTable.getValueAt(mainTable.getSelectedRow(),1)+"', " +(new Random().nextInt()+500)+
+                        ",TRIM('"+mainTable.getValueAt(mainTable.getSelectedRow(),4)+"')," +
+                        "(SELECT DISTINCT p.Pesel FROM pracownik p JOIN zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" z ON z.pracownik_Pesel =p.Pesel WHERE CONCAT(p.imie,' ',p.Nazwisko) = '"+mainTable.getValueAt(mainTable.getSelectedRow(),5)+"')," +
+                        ""+(new Random().nextInt(100))+", NULL, '"+mainTable.getValueAt(mainTable.getSelectedRow(),3)+"')";
+            else if(zamowieniaBox.getSelectedIndex()==0)      // wejsciowe
+                q = "INSERT INTO zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+"(" +
+                        "Id, Data, nr_faktury_rozch, dostawca_regon, pracownik_Pesel,filia_Nr_filii, wartosc, zrealizowane" +
+                        ") VALUES(" +
+                        "NULL, '" +
+                        mainTable.getValueAt(mainTable.getSelectedRow(),1)+"', " +(new Random().nextInt()+500)+
+                        ",TRIM('"+mainTable.getValueAt(mainTable.getSelectedRow(),4)+"')," +
+                        "(SELECT DISTINCT p.Pesel FROM pracownik p JOIN zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" z ON z.pracownik_Pesel =p.Pesel WHERE CONCAT(p.imie,' ',p.Nazwisko) = '"+mainTable.getValueAt(mainTable.getSelectedRow(),5)+"')," +
+                        ""+(new Random().nextInt(100))+", NULL, '"+mainTable.getValueAt(mainTable.getSelectedRow(),3)+"')";
+            try {
+                System.out.println(q);
+                baza.executeUpdate(q);
+                JOptionPane.showMessageDialog(null,"Poprawnie dodano wybrany rekord!");
+            }  catch(SQLException e2) {
+                e2.printStackTrace();
+                JOptionPane.showMessageDialog(null,"Nie udało się dodać rekordu z nastepującego powodu: "+e2.getMessage());//To change body of catch statement use File | Settings | File Templates.
+            }
+            addButton.setText("Dodaj");
+            try {
+                baza.executeQuery(baza.getLastQuery());
+            }catch(Exception eee) {}
+        }
+    }
+
+    private void addButon_ElemActionPerformed(ActionEvent e) {
+        String q = "INSERT INTO pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" VALUES("+mainTable.getValueAt(mainTable.getSelectedRow(),1)+"," +
+                ""+mainTable.getValueAt(mainTable.getSelectedRow(),2)+"," +
+                ""+mainTable.getValueAt(mainTable.getSelectedRow(),0)+")";
+        if(addButon_Elem.getText().equals("Dodaj")) {
+            try {
+                ArrayList<Integer> x = new ArrayList();
+                x.add(new Integer(1));
+                x.add(new Integer(2));
+                baza.executeQuery(baza.getLastQuery());
+                DefaultTableModel tbmodel = (DefaultTableModel)baza.getAsEditableTableModel(x,0);
+                tbmodel.insertRow(0,new Object[]{mainTable.getValueAt(mainTable.getSelectedRow(),0).toString(),"","",""});
+                mainTable.setModel(tbmodel);
+                addButon_Elem.setText("ZAKONCZ");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+        }
+        else {
+            try {
+                System.out.println(q);
+                baza.executeUpdate(q);
+                JOptionPane.showMessageDialog(null,"Poprawnie dodano wybrany rekord!");
+            }  catch(SQLException e2) {
+                e2.printStackTrace();
+                JOptionPane.showMessageDialog(null,"Nie udało się dodać rekordu z nastepującego powodu: "+e2.getMessage());//To change body of catch statement use File | Settings | File Templates.
+            }
+            addButon_Elem.setText("Dodaj");
+            try {
+                baza.executeQuery(baza.getLastQuery());
+            }catch(Exception eee) {}
+
         }
     }
 
@@ -710,6 +827,12 @@ public class glowneokno extends JFrame {
 
                 //---- addButton ----
                 addButton.setText("Dodaj");
+                addButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        addButtonActionPerformed(e);
+                    }
+                });
 
                 //---- editButton ----
                 editButton.setText("Edytuj");
@@ -779,9 +902,21 @@ public class glowneokno extends JFrame {
 
                 //---- editButton_Elem ----
                 editButton_Elem.setText("Edytuj");
+                editButton_Elem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        editButton_ElemActionPerformed(e);
+                    }
+                });
 
                 //---- addButon_Elem ----
                 addButon_Elem.setText("Dodaj");
+                addButon_Elem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        addButon_ElemActionPerformed(e);
+                    }
+                });
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -844,7 +979,7 @@ public class glowneokno extends JFrame {
                                     .addComponent(addButton)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(deleteButton_Elem)
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(editButton_Elem)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(addButon_Elem))

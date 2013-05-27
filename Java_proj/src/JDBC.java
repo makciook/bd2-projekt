@@ -215,6 +215,7 @@ public class JDBC {
         }
     }
 
+
     public TableModel getAsEditableTableModel(final ArrayList<Integer> cols, final int rzad) {
         try {
 
