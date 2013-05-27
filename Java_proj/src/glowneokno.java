@@ -1,27 +1,212 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.border.*;
+import javax.swing.table.AbstractTableModel;
+
+
 
 public class glowneokno extends JFrame {
     private JDBC baza;
+    private String[] zamowienia = { "Wejściowe", "Wyjściowe"};
+    private String[] sql_zam    = { "wej", "wyj"};
+    private String[] kl_zam     = { "dostawca", "klient"};
 
     public glowneokno() {
         setTitle("Magazyn BD2 2013");
         initComponents();
         this.setVisible(true);
-        //baza = new JDBC("","","localhost","3306","bd2-baza");
-        baza = new JDBC("bd2", "bd2", "46.167.245.192", "3306", "bd2-baza");
+        baza = new JDBC("Maciek","Maciek","localhost","3306","bd2-baza");
+        returnButton.setVisible(false);
+        deleteButton_Elem.setVisible(false);
+        editButton_Elem.setVisible(false);
+        addButon_Elem.setVisible(false);
+
+        // uzupelnij combobox zamowieniami
+        for(String s : zamowienia) {
+            zamowieniaBox.addItem(s);
+        }
+
+        //baza = new JDBC("bd2", "bd2", "46.167.245.192", "3306", "bd2-baza");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         try {
-            baza.executeQuery("SELECT * FROM dostawca");
+            String q = "SELECT zw.Id, Data, FORMAT(wartosc*100,2) AS Wartosc, zrealizowane, dostawca_Regon AS Dostawca, CONCAT(pr.Imie, CONCAT(' ', pr.Nazwisko)) AS Pracownik FROM zamowienia_wej zw" +
+                    " JOIN pracownik pr ON pr.Pesel = zw.pracownik_pesel" +
+                    " ORDER BY Id ASC";
+            baza.getConnection();
+            baza.executeQuery(q);
             this.mainTable.setModel(baza.getAsTableModel());
+            mainTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            mainTable.setColumnSelectionAllowed(false);
+            mainTable.setRowSelectionAllowed(true);
         } catch(Exception e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
         }
+
+        mainTable.addMouseListener(new MouseAdapter() {
+            /** First click on table **/
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() == 2) {
+                    /*JTable target = (JTable)e.getSource();
+                    int row = target.getSelectedRow();
+                    try {
+                        String q = "SELECT zw.ID As 'NR zamówienia', pzw.Ilosc AS Ilosc, pzw.czesci_Id AS 'Numer czesci', FORMAT(cz.wartosc*pzw.Ilosc*100,2) AS Wartosc"+
+                                " FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" zw " +
+                                " JOIN pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" pzw ON zw.Id=pzw.zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+"_Id" +
+                                " JOIN czesci cz ON cz.Id = pzw.czesci_Id" +
+                                //" JOIN "+kl_zam[zamowieniaBox.getSelectedIndex()]+" kl ON zw."+kl_zam[zamowieniaBox.getSelectedIndex()]+" = kl.Regon"+
+                                " WHERE zw.Id="+target.getValueAt(row,0);
+                        if(!fromTextField.getText().equals("YYYY-MM-DD"))
+                            q += " AND zw.Data > '"+fromTextField.getText()+"'";
+                        if(!toTextField.getText().equals("YYYY-MM-DD"))
+                            q += " AND zw.Data < '"+toTextField.getText()+"'";
+                        System.out.println(q);
+                        baza.executeQuery(q);
+                        mainTable.setModel(baza.getAsTableModel());
+
+                        returnButton.setVisible(true);
+                        tableEnable(false);
+                    }catch(Exception ex) {
+                        ex.printStackTrace();
+                    }  */
+
+
+                }
+
+               /* Random r = new Random();
+                String[] prac = {"11111111111", "11122233300","91919112123", "99999999999"}     ;
+                String[] klient = {"000000000", "111111111" ,"123123123"} ;
+                String[] dostawca = {"012603008", "015071377", "114544561", "215601032","316353381"}    ;
+
+                for(int i = 1; i < 1000; ++i) {
+                    try {
+                        int x = r.nextInt(100);
+                        int y= r.nextInt(30)+70;
+                        String q = "INSERT INTO zamowienia_wej VALUES("+i+",DATE_ADD('2012-01-01', INTERVAL "+i+" DAY),'"+dostawca[i%dostawca.length]+"','"+prac[i%prac.length]+"',"+y+","+i+",NULL)";
+                        System.out.println(q);
+                        baza.executeUpdate(q);
+                    } catch(Exception x1) { System.out.println("\t"+x1.getMessage());}
+                }
+
+                for(int i = 1; i < 10000; ++i) {
+                    try {
+                        int x = r.nextInt(100);
+                        int y = r.nextInt(30918)+1;
+                        int z = r.nextInt(1000);
+                        String q = "INSERT INTO pozycje_zam_wej VALUES("+x+","+y+","+z+")";
+                        System.out.println(q);
+                        baza.executeUpdate(q);
+                    } catch(Exception x1) {}
+                }      */
+
+                    /*for(int i = 0; i < 1000; ++i) {
+                        try {
+                            int x = r.nextInt(100);
+                            int y= r.nextInt(30)+70;
+                            String q = "INSERT INTO zamowienia_wyj VALUES("+i+",DATE_ADD('2012-01-01', INTERVAL "+i+" DAY),"+i+","+klient[i%klient.length]+","+prac[i%prac.length]+","+y+")";
+                            System.out.println(q);
+                            baza.executeUpdate(q);
+                        } catch(Exception x1) {}
+                    }
+
+                    for(int i = 0; i < 1000; ++i) {
+                        try {
+                            int x = r.nextInt(100);
+                            int y = r.nextInt(30918)+1;
+                            int z = r.nextInt(20);
+                            String q = "INSERT INTO pozycje_zam_wyj VALUES("+x+","+y+","+z+")";
+                            System.out.println(q);
+                            baza.executeUpdate(q);
+                        } catch(Exception x1) {}
+                    }*/
+                /*String kategorie[] = {"Alkomaty", "Anteny", "Bagażniki", "Blokady", "Chlapacze", "Dywaniki", "Chłodzenie silnika", "Części karoserii", "Filtry", "Felgi", "Ogrzewanie", "Oświetlenie", "Silniki", "Tuning", "Zapłon", "Układ hamulcowy", "Układ napędowy", "Układ paliwowy", "Układ wydechowy", "Wyposażenie wnętrza", "Zawieszenie"};
+
+
+                try {
+                    for(int i = 98; i<100000; ++i) {
+                        int x = r.nextInt(22)+1;
+                        System.out.println("x:"+x);
+                        String q = "INSERT INTO czesci VALUES(NULL," + r.nextInt(1000)+","+r.nextInt(1000)+","+x+","+r.nextDouble()+")";
+                        System.out.println(q);
+                        baza.executeUpdate(q);
+                    }
+                } catch(Exception x1) {}
+
+                try {
+                   String[] ulice = {"Kiepury","Jana","Kilińskiego","Jana","Klonowicza","Sebastiana","Kmicica","Andrzeja","Kochanowskiego","Jana","Kołłątaja","Hugona","Komeńskiego","Jana","Amosa,","Konopnickiej","Marii","Konstytucji","3","Maja","Korcza","Teodora","Korczaka","Janusza","Kordeckiego","Augustyna","Korfantego","Wojciecha","Kosmonautów","Kossaka","Juliusza","Kosynierów","Kościelna","Kościuszki","Tadeusza","Kowalskiego","Rocha","Kraszewskiego","","Ignacego","Krasińskiego","Zygmunta,","Kręta","Królowej","Jadwigi","Krótka","Kruczkowskiego","Leona","Kryłowa","Iwana","Krzyckiego","Andrzej","Krzywa","Kudlli","Mieczysława","Kujawska","Kurpińskiego","Karola","Kurkowa","Kubańska","Kwiatowa"};
+                    for(int i = 2; i<ulice.length; ++i) {
+                        String q = "INSERT INTO dostawca VALUES('Dostawca"+i+"','ul. "+ulice[i]+" "+r.nextInt()+"','"+r.nextInt(8)+1+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+"')";
+                        System.out.println(q);
+                        baza.executeUpdate(q);
+                    }
+                } catch(Exception x1) {}
+
+                try {
+                    String[] ulice = {"Kiepury","Jana","Kilińskiego","Jana","Klonowicza","Sebastiana","Kmicica","Andrzeja","Kochanowskiego","Jana","Kołłątaja","Hugona","Komeńskiego","Jana","Amosa,","Konopnickiej","Marii","Konstytucji","3","Maja","Korcza","Teodora","Korczaka","Janusza","Kordeckiego","Augustyna","Korfantego","Wojciecha","Kosmonautów","Kossaka","Juliusza","Kosynierów","Kościelna","Kościuszki","Tadeusza","Kowalskiego","Rocha","Kraszewskiego","","Ignacego","Krasińskiego","Zygmunta,","Kręta","Królowej","Jadwigi","Krótka","Kruczkowskiego","Leona","Kryłowa","Iwana","Krzyckiego","Andrzej","Krzywa","Kudlli","Mieczysława","Kujawska","Kurpińskiego","Karola","Kurkowa","Kubańska","Kwiatowa"};
+                    for(int i = 70; i<100; ++i) {
+
+                        String q ="INSERT INTO lokalizacja VALUES("+i+",'Lokalizacja "+i+"','"+ulice[i%ulice.length]+" "+r.nextInt(40)+"/"+r.nextInt(100)+"')";
+                        System.out.println(q);
+                        baza.executeUpdate(q);
+
+                    }
+                } catch(SQLException x1) {}*/
+
+
+            }
+        });
+
+        zamowieniaBox.addMouseListener(new MouseAdapter() {
+
+        });
+
+        returnButton.addMouseListener(new MouseAdapter() {
+            /** Powrot **/
+            public void mouseClicked(MouseEvent e) {
+
+                try {
+                    String q = "SELECT zw.Id, Data, FORMAT(wartosc*100,2) AS Wartosc, zrealizowane, "+kl_zam[zamowieniaBox.getSelectedIndex()]+"_Regon AS "+kl_zam[zamowieniaBox.getSelectedIndex()]+", CONCAT(pr.Imie, CONCAT(' ', pr.Nazwisko)) AS Pracownik FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" zw" +
+                            " JOIN pracownik pr ON pr.Pesel = zw.pracownik_pesel WHERE 1 = 1";
+
+
+                    if(!fromTextField.getText().equals("YYYY-MM-DD"))
+                        q += " AND zw.Data > '"+fromTextField.getText()+"'";
+                    if(!toTextField.getText().equals("YYYY-MM-DD"))
+                        q += " AND zw.Data < '"+toTextField.getText()+"'";
+
+                    q += " ORDER BY zw.Id ASC";
+
+                    baza.executeQuery(q);
+                    mainTable.setModel(baza.getAsTableModel());
+                    tableEnable(true);
+                    returnButton.setVisible(false);
+                    viewButton.setVisible(true);
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void tableEnable(boolean val) {
+        //
+        // mainTable.setEnabled(val);
+        fakturaMenuitem.setEnabled(!val);
+        deleteButton_Zam.setVisible(val);
+        addButton.setVisible(val);
+        editButton.setVisible(val);
+        viewButton.setVisible(val);
+
+        editButton_Elem.setVisible(!val);
+        addButon_Elem.setVisible(!val);
+        deleteButton_Elem.setVisible(!val);
+
     }
 
     private void m_DB_setDataActionPerformed(ActionEvent e) {
@@ -49,6 +234,226 @@ public class glowneokno extends JFrame {
         }
     }
 
+    private void scrollPane1MouseClicked(MouseEvent e) {
+        // TODO add your code here
+    }
+
+    private void zamowieniaBoxActionPerformed(ActionEvent e) {
+        //public void mouseClicked(MouseEvent e) {
+        /** Combobox click **/
+            JComboBox target = (JComboBox)e.getSource();
+            int ind = target.getSelectedIndex();
+            try {
+
+                String q = "SELECT zw.Id, Data, FORMAT(wartosc*100,2) AS Wartosc, zrealizowane, "+kl_zam[zamowieniaBox.getSelectedIndex()]+"_Regon AS "+kl_zam[zamowieniaBox.getSelectedIndex()]+", CONCAT(pr.Imie, CONCAT(' ', pr.Nazwisko)) AS Pracownik FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" zw" +
+                        " JOIN pracownik pr ON pr.Pesel = zw.pracownik_pesel WHERE 1 = 1";
+
+
+                if(!fromTextField.getText().equals("YYYY-MM-DD"))
+                    q += " AND zw.Data > '"+fromTextField.getText()+"'";
+                if(!toTextField.getText().equals("YYYY-MM-DD"))
+                    q += " AND zw.Data < '"+toTextField.getText()+"'";
+
+                q += " ORDER BY zw.Id ASC";
+                baza.executeQuery(q);
+                mainTable.setModel(baza.getAsTableModel());
+                tableEnable(true);
+            }catch(Exception ex) {
+                System.out.println("Baza nie jest jeszcze gotowa! (zamowienia box click)");
+            }
+        //}
+    }
+
+    private void m_Manage_zaminActionPerformed(ActionEvent e) {
+        this.zamowieniaBox.setSelectedIndex(0);
+        tableEnable(true);
+    }
+
+    private void m_Manage_zamoutActionPerformed(ActionEvent e) {
+        this.zamowieniaBox.setSelectedIndex(1);
+        tableEnable(true);
+    }
+
+    private void menuItem12ActionPerformed(ActionEvent e) {
+        /** Raporty **/
+        int ind = this.zamowieniaBox.getSelectedIndex();
+        try {
+            String q = "SELECT zw.Id, Data, FORMAT(wartosc*100,2) AS Wartosc, zrealizowane, "+kl_zam[zamowieniaBox.getSelectedIndex()]+"_Regon AS "+kl_zam[zamowieniaBox.getSelectedIndex()]+", CONCAT(pr.Imie, CONCAT(' ', pr.Nazwisko)) AS Pracownik FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" zw" +
+                    " JOIN pracownik pr ON pr.Pesel = zw.pracownik_pesel WHERE 1 = 1" +
+                    " AND zw.zrealizowane ='T'";
+
+
+            if(!fromTextField.getText().equals("YYYY-MM-DD"))
+                q += " AND zw.Data > '"+fromTextField.getText()+"'";
+            if(!toTextField.getText().equals("YYYY-MM-DD"))
+                q += " AND zw.Data < '"+toTextField.getText()+"'";
+
+            q += " ORDER BY zw.Id ASC";
+
+            baza.executeQuery(q);
+            mainTable.setModel(baza.getAsTableModel());
+            tableEnable(true);
+        }catch(Exception ex) {
+            System.out.println("Baza nie jest jeszcze gotowa! (raport zrealizowane)");
+        }
+    }
+
+    private void menuItem13ActionPerformed(ActionEvent e) {
+
+        int ind = this.zamowieniaBox.getSelectedIndex();
+        try {
+            String q = "SELECT zw.Id, Data, FORMAT(wartosc*100,2) AS Wartosc, zrealizowane, "+kl_zam[zamowieniaBox.getSelectedIndex()]+"_Regon AS "+kl_zam[zamowieniaBox.getSelectedIndex()]+", CONCAT(pr.Imie, CONCAT(' ', pr.Nazwisko)) AS Pracownik FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" zw" +
+                    " JOIN pracownik pr ON pr.Pesel = zw.pracownik_pesel WHERE 1 = 1" +
+                    " AND zw.zrealizowane ='N'";
+
+
+            if(!fromTextField.getText().equals("YYYY-MM-DD"))
+                q += " AND zw.Data > '"+fromTextField.getText()+"'";
+            if(!toTextField.getText().equals("YYYY-MM-DD"))
+                q += " AND zw.Data < '"+toTextField.getText()+"'";
+
+            q += " ORDER BY zw.Id ASC";
+
+            baza.executeQuery(q);
+            mainTable.setModel(baza.getAsTableModel());
+            tableEnable(true);
+        }catch(Exception ex) {
+            System.out.println("Baza nie jest jeszcze gotowa! (raport niezrealizowane)");
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private void button1ActionPerformed(ActionEvent e) {
+        fromTextField.setText("YYYY-MM-DD");
+        toTextField.setText("YYYY-MM-DD");
+        int id = zamowieniaBox.getSelectedIndex();
+        zamowieniaBox.setSelectedIndex(id);
+        tableEnable(true);
+    }
+
+    private void filterButtonActionPerformed(ActionEvent e) {
+        int id = zamowieniaBox.getSelectedIndex();
+        zamowieniaBox.setSelectedIndex(id);
+        tableEnable(true);
+    }
+
+    private void deleteButtonActionPerformed(ActionEvent e) {
+        Object id = mainTable.getValueAt(mainTable.getSelectedRow(),0);   // get id
+        try {
+            baza.executeUpdate("DELETE FROM pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" " +
+                " WHERE zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+"_Id ="+id);
+
+            baza.executeUpdate("DELETE FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+"" +
+                " WHERE Id = "+id);
+
+            int id2 = zamowieniaBox.getSelectedIndex();
+            zamowieniaBox.setSelectedIndex(id2);
+
+            JOptionPane.showMessageDialog(null,"Poprawnie usunięto wybrany rekord!");
+
+        } catch(Exception ex) {
+            JOptionPane.showMessageDialog(null,"Nie udało się usunąć rekordu z nastepującego powodu: "+ex.getMessage());
+            System.out.println(ex.getMessage());
+        }
+
+    }
+
+    private void deleteButton_ElemActionPerformed(ActionEvent e) {
+        Object ilosc = mainTable.getValueAt(mainTable.getSelectedRow(), 1);   // get id;
+        Object czesci_Id = mainTable.getValueAt(mainTable.getSelectedRow(),2);
+        Object zwejid = mainTable.getValueAt(mainTable.getSelectedRow(),0);
+        String q = "DELETE FROM pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" WHERE Ilosc = "+ilosc+" AND czesci_Id = "+czesci_Id+" AND zamowienia_wej_Id = "+zwejid;
+        try {
+            System.out.println(q);
+            baza.executeUpdate(q);
+            int id2 = zamowieniaBox.getSelectedIndex();
+            zamowieniaBox.setSelectedIndex(id2);
+            JOptionPane.showMessageDialog(null,"Poprawnie usunięto wybrany rekord!");
+        } catch(Exception ex) {
+            JOptionPane.showMessageDialog(null,"Nie udało się usunąć rekordu z nastepującego powodu: "+ex.getMessage());
+            ex.getMessage();
+        }
+    }
+
+    private void scrollPane1KeyTyped(KeyEvent e) {
+        // TODO add your code here
+    }
+
+    private void editButtonActionPerformed(ActionEvent e) {
+        if(editButton.getText().equals("ZAKONCZ")) {
+            editButton.setText("Edytuj");
+            String q = "UPDATE zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" SET Data = '"+mainTable.getValueAt(mainTable.getSelectedRow(),1)+"'" +
+                    ", wartosc = "+mainTable.getValueAt(mainTable.getSelectedRow(),2)+"" +
+                    ", zrealizowane = '"+mainTable.getValueAt(mainTable.getSelectedRow(),3)+"'" +
+                    ", dostawca_Regon = '"+mainTable.getValueAt(mainTable.getSelectedRow(),4)+"'" +
+                    " WHERE Id = "+mainTable.getValueAt(mainTable.getSelectedRow(),0);
+            System.out.println(q);
+            try {
+                baza.executeUpdate(q);
+                baza.executeQuery(baza.getLastQuery());
+                baza.getAsTableModel();
+                JOptionPane.showMessageDialog(null,"Poprawnie zmieniono wybrany rekord!");
+            } catch(Exception exx) {
+                JOptionPane.showMessageDialog(null,"Nie udało się zmienić rekordu z nastepującego powodu: "+exx.getMessage());
+                System.out.println(exx.getMessage());
+
+            }
+        }
+        else {
+            editButton.setText("ZAKONCZ");
+            ArrayList<Integer> al = new ArrayList();
+            al.add(new Integer(1));
+            al.add(new Integer(2));
+            al.add(new Integer(3));
+            al.add(new Integer(4));
+
+            try {
+                baza.executeQuery(baza.getLastQuery());
+                mainTable.setModel(baza.getAsEditableTableModel(al, mainTable.getSelectedRow()));
+            } catch(Exception ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+
+    }
+
+    private void viewButtonActionPerformed(ActionEvent e) {
+        //JTable target = (JTable)e.getSource();
+        int row = mainTable.getSelectedRow();
+        try {
+            String q = "SELECT zw.ID As 'NR zamówienia', pzw.Ilosc AS Ilosc, pzw.czesci_Id AS 'Numer czesci', FORMAT(cz.wartosc*pzw.Ilosc*100,2) AS Wartosc"+
+                    " FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" zw " +
+                    " JOIN pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" pzw ON zw.Id=pzw.zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+"_Id" +
+                    " JOIN czesci cz ON cz.Id = pzw.czesci_Id" +
+                    //" JOIN "+kl_zam[zamowieniaBox.getSelectedIndex()]+" kl ON zw."+kl_zam[zamowieniaBox.getSelectedIndex()]+" = kl.Regon"+
+                    " WHERE zw.Id="+mainTable.getValueAt(row,0);
+            if(!fromTextField.getText().equals("YYYY-MM-DD"))
+                q += " AND zw.Data > '"+fromTextField.getText()+"'";
+            if(!toTextField.getText().equals("YYYY-MM-DD"))
+                q += " AND zw.Data < '"+toTextField.getText()+"'";
+            System.out.println(q);
+            baza.executeQuery(q);
+            mainTable.setModel(baza.getAsTableModel());
+
+            returnButton.setVisible(true);
+            tableEnable(false);
+        }catch(Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     mainTable = new JTable(){
+         private static final long serialVersionUID = 1L;
+
+         public boolean isCellEditable(int row, int column) {
+            return false;
+         };
+     };
+
+     */
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Maciek C
@@ -75,14 +480,26 @@ public class glowneokno extends JFrame {
         menu4 = new JMenu();
         menuItem12 = new JMenuItem();
         menuItem13 = new JMenuItem();
-        menuItem14 = new JMenuItem();
+        fakturaMenuitem = new JMenuItem();
         dialogPane = new JPanel();
         contentPanel = new JPanel();
         scrollPane1 = new JScrollPane();
         mainTable = new JTable();
-        buttonBar = new JPanel();
-        okButton = new JButton();
-        cancelButton = new JButton();
+        zamowieniaBox = new JComboBox();
+        returnButton = new JButton();
+        addButton = new JButton();
+        editButton = new JButton();
+        deleteButton_Zam = new JButton();
+        label1 = new JLabel();
+        label2 = new JLabel();
+        button1 = new JButton();
+        fromTextField = new JTextField();
+        toTextField = new JTextField();
+        filterButton = new JButton();
+        deleteButton_Elem = new JButton();
+        viewButton = new JButton();
+        editButton_Elem = new JButton();
+        addButon_Elem = new JButton();
 
         //======== this ========
         Container contentPane = getContentPane();
@@ -97,14 +514,17 @@ public class glowneokno extends JFrame {
 
                 //---- menuItem1 ----
                 menuItem1.setText("Zapisz parametry po\u0142\u0105czenia");
+                menuItem1.setEnabled(false);
                 m_File.add(menuItem1);
 
                 //---- menuItem2 ----
                 menuItem2.setText("Wczytaj parametry po\u0142\u0105czenia");
+                menuItem2.setEnabled(false);
                 m_File.add(menuItem2);
 
                 //---- menuItem3 ----
                 menuItem3.setText("Zapisz widok do pliku HTML");
+                menuItem3.setEnabled(false);
                 m_File.add(menuItem3);
 
                 //---- menuItem4 ----
@@ -155,22 +575,37 @@ public class glowneokno extends JFrame {
 
                 //---- m_Manage_zamin ----
                 m_Manage_zamin.setText("Zam\u00f3wienia wej\u015bciowe");
+                m_Manage_zamin.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        m_Manage_zaminActionPerformed(e);
+                    }
+                });
                 m_Manage.add(m_Manage_zamin);
 
                 //---- m_Manage_zamout ----
                 m_Manage_zamout.setText("Zam\u00f3wienia wyj\u015bciowe");
+                m_Manage_zamout.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        m_Manage_zamoutActionPerformed(e);
+                    }
+                });
                 m_Manage.add(m_Manage_zamout);
 
                 //---- m_Manage_kategorie ----
                 m_Manage_kategorie.setText("Kategorie");
+                m_Manage_kategorie.setEnabled(false);
                 m_Manage.add(m_Manage_kategorie);
 
                 //---- m_Manage_czesci ----
                 m_Manage_czesci.setText("Cz\u0119\u015bci");
+                m_Manage_czesci.setEnabled(false);
                 m_Manage.add(m_Manage_czesci);
 
                 //---- m_Manage_lokaliz ----
                 m_Manage_lokaliz.setText("Lokalizacje");
+                m_Manage_lokaliz.setEnabled(false);
                 m_Manage.add(m_Manage_lokaliz);
 
                 //======== menu2 ========
@@ -179,14 +614,17 @@ public class glowneokno extends JFrame {
 
                     //---- m_Manage_pracownicy ----
                     m_Manage_pracownicy.setText("Pracownicy");
+                    m_Manage_pracownicy.setEnabled(false);
                     menu2.add(m_Manage_pracownicy);
 
                     //---- m_Manage_klienci ----
                     m_Manage_klienci.setText("Klienci");
+                    m_Manage_klienci.setEnabled(false);
                     menu2.add(m_Manage_klienci);
 
                     //---- m_Manage_dostawcy ----
                     m_Manage_dostawcy.setText("Dostawcy");
+                    m_Manage_dostawcy.setEnabled(false);
                     menu2.add(m_Manage_dostawcy);
                 }
                 m_Manage.add(menu2);
@@ -199,15 +637,28 @@ public class glowneokno extends JFrame {
 
                 //---- menuItem12 ----
                 menuItem12.setText("Zam\u00f3wienia zrealizowane");
+                menuItem12.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        menuItem12ActionPerformed(e);
+                    }
+                });
                 menu4.add(menuItem12);
 
                 //---- menuItem13 ----
                 menuItem13.setText("Zam\u00f3wienia do realizacji");
+                menuItem13.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        menuItem13ActionPerformed(e);
+                    }
+                });
                 menu4.add(menuItem13);
 
-                //---- menuItem14 ----
-                menuItem14.setText("Faktura zam\u00f3wienia");
-                menu4.add(menuItem14);
+                //---- fakturaMenuitem ----
+                fakturaMenuitem.setText("Faktura zam\u00f3wienia");
+                fakturaMenuitem.setEnabled(false);
+                menu4.add(fakturaMenuitem);
             }
             menuBar1.add(menu4);
         }
@@ -231,8 +682,106 @@ public class glowneokno extends JFrame {
 
                 //======== scrollPane1 ========
                 {
+                    scrollPane1.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            scrollPane1MouseClicked(e);
+                        }
+                    });
+                    scrollPane1.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyTyped(KeyEvent e) {
+                            scrollPane1KeyTyped(e);
+                        }
+                    });
                     scrollPane1.setViewportView(mainTable);
                 }
+
+                //---- zamowieniaBox ----
+                zamowieniaBox.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        zamowieniaBoxActionPerformed(e);
+                    }
+                });
+
+                //---- returnButton ----
+                returnButton.setText("Powr\u00f3t");
+
+                //---- addButton ----
+                addButton.setText("Dodaj");
+
+                //---- editButton ----
+                editButton.setText("Edytuj");
+                editButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        editButtonActionPerformed(e);
+                    }
+                });
+
+                //---- deleteButton_Zam ----
+                deleteButton_Zam.setText("Usu\u0144");
+                deleteButton_Zam.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        deleteButtonActionPerformed(e);
+                    }
+                });
+
+                //---- label1 ----
+                label1.setText("Od:");
+
+                //---- label2 ----
+                label2.setText("Do:");
+
+                //---- button1 ----
+                button1.setText("Wyczy\u015b\u0107");
+                button1.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        button1ActionPerformed(e);
+                    }
+                });
+
+                //---- fromTextField ----
+                fromTextField.setText("YYYY-MM-DD");
+
+                //---- toTextField ----
+                toTextField.setText("YYYY-MM-DD");
+
+                //---- filterButton ----
+                filterButton.setText("Zastosuj");
+                filterButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        filterButtonActionPerformed(e);
+                    }
+                });
+
+                //---- deleteButton_Elem ----
+                deleteButton_Elem.setText("Usu\u0144");
+                deleteButton_Elem.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        deleteButton_ElemActionPerformed(e);
+                    }
+                });
+
+                //---- viewButton ----
+                viewButton.setText("Zobacz");
+                viewButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        viewButtonActionPerformed(e);
+                    }
+                });
+
+                //---- editButton_Elem ----
+                editButton_Elem.setText("Edytuj");
+
+                //---- addButon_Elem ----
+                addButon_Elem.setText("Dodaj");
 
                 GroupLayout contentPanelLayout = new GroupLayout(contentPanel);
                 contentPanel.setLayout(contentPanelLayout);
@@ -240,39 +789,70 @@ public class glowneokno extends JFrame {
                     contentPanelLayout.createParallelGroup()
                         .addGroup(contentPanelLayout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 724, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(145, Short.MAX_VALUE))
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 724, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(29, 29, 29)
+                                    .addGroup(contentPanelLayout.createParallelGroup()
+                                        .addComponent(addButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(editButton, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(deleteButton_Elem, GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                                        .addComponent(deleteButton_Zam, GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                                        .addComponent(viewButton, GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                                        .addComponent(editButton_Elem, GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                                        .addComponent(addButon_Elem, GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)))
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(zamowieniaBox, GroupLayout.PREFERRED_SIZE, 218, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(returnButton)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(label1)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(fromTextField, GroupLayout.PREFERRED_SIZE, 80, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(label2)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(toTextField, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(filterButton, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(button1, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)))
+                            .addGap(0, 0, 0))
                 );
                 contentPanelLayout.setVerticalGroup(
                     contentPanelLayout.createParallelGroup()
                         .addGroup(GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                            .addContainerGap(46, Short.MAX_VALUE)
-                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 549, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(contentPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(zamowieniaBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(returnButton)
+                                .addComponent(label1)
+                                .addComponent(label2)
+                                .addComponent(fromTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(toTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(filterButton)
+                                .addComponent(button1))
+                            .addGap(18, 18, 18)
+                            .addGroup(contentPanelLayout.createParallelGroup()
+                                .addGroup(contentPanelLayout.createSequentialGroup()
+                                    .addComponent(viewButton)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(deleteButton_Zam)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(editButton)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(addButton)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(deleteButton_Elem)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(editButton_Elem)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(addButon_Elem))
+                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 587, GroupLayout.PREFERRED_SIZE))
+                            .addGap(17, 17, 17))
                 );
             }
-            dialogPane.add(contentPanel, BorderLayout.CENTER);
-
-            //======== buttonBar ========
-            {
-                buttonBar.setBorder(new EmptyBorder(12, 0, 0, 0));
-                buttonBar.setLayout(new GridBagLayout());
-                ((GridBagLayout)buttonBar.getLayout()).columnWidths = new int[] {0, 85, 80};
-                ((GridBagLayout)buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0, 0.0};
-
-                //---- okButton ----
-                okButton.setText("OK");
-                buttonBar.add(okButton, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 5), 0, 0));
-
-                //---- cancelButton ----
-                cancelButton.setText("Cancel");
-                buttonBar.add(cancelButton, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
-            }
-            dialogPane.add(buttonBar, BorderLayout.SOUTH);
+            dialogPane.add(contentPanel, BorderLayout.NORTH);
         }
         contentPane.add(dialogPane, BorderLayout.CENTER);
         pack();
@@ -305,13 +885,25 @@ public class glowneokno extends JFrame {
     private JMenu menu4;
     private JMenuItem menuItem12;
     private JMenuItem menuItem13;
-    private JMenuItem menuItem14;
+    private JMenuItem fakturaMenuitem;
     private JPanel dialogPane;
     private JPanel contentPanel;
     private JScrollPane scrollPane1;
     private JTable mainTable;
-    private JPanel buttonBar;
-    private JButton okButton;
-    private JButton cancelButton;
+    private JComboBox zamowieniaBox;
+    private JButton returnButton;
+    private JButton addButton;
+    private JButton editButton;
+    private JButton deleteButton_Zam;
+    private JLabel label1;
+    private JLabel label2;
+    private JButton button1;
+    private JTextField fromTextField;
+    private JTextField toTextField;
+    private JButton filterButton;
+    private JButton deleteButton_Elem;
+    private JButton viewButton;
+    private JButton editButton_Elem;
+    private JButton addButon_Elem;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

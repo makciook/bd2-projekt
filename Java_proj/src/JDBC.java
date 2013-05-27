@@ -8,6 +8,7 @@
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class JDBC {
@@ -35,6 +36,8 @@ public class JDBC {
     public void setAddress(String a) { if(!a.isEmpty()) address = a; }
     public void setPort(String pp) { if(!pp.isEmpty()) port = pp; }
     public void setName(String n) { if(!n.isEmpty()) name = n; }
+
+    private String lastquery;
 
     public void resetData() {
         url = null;
@@ -125,7 +128,9 @@ public class JDBC {
     }
 
     public void executeQuery(String query) throws SQLException {
+        lastquery = query;
         rs = stmt.executeQuery(query);
+
     }
 
     public int executeUpdate(String query) throws SQLException {
@@ -148,11 +153,16 @@ public class JDBC {
             url+=(address+":"+port+"/"+name);
             if(haslo==null || haslo.isEmpty()) haslo="";
             connection = DriverManager.getConnection(url,login,haslo);
+            this.createStatement();
         } catch (ClassNotFoundException e) {
             System.out.println("Where is your MySQL JDBC Driver?");
         }
 
         return connection;
+    }
+
+    public String getLastQuery() {
+        return lastquery;
     }
 
     public boolean closeConnection()
@@ -166,6 +176,7 @@ public class JDBC {
 
     public TableModel getAsTableModel() {
         try {
+
             ResultSetMetaData metaData = rs.getMetaData();
             int numberOfColumns = metaData.getColumnCount();
             Vector columnNames = new Vector();
@@ -188,7 +199,57 @@ public class JDBC {
                 rows.addElement(newRow);
             }
 
-            return new DefaultTableModel(rows, columnNames);
+
+
+            return new DefaultTableModel(rows, columnNames) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+
+            };
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+    public TableModel getAsEditableTableModel(final ArrayList<Integer> cols, final int rzad) {
+        try {
+
+            ResultSetMetaData metaData = rs.getMetaData();
+            int numberOfColumns = metaData.getColumnCount();
+            Vector columnNames = new Vector();
+
+            // Get the column names
+            for (int column = 0; column < numberOfColumns; column++) {
+                columnNames.addElement(metaData.getColumnLabel(column + 1));
+            }
+
+            // Get all rows.
+            Vector rows = new Vector();
+
+            while (rs.next()) {
+                Vector newRow = new Vector();
+
+                for (int i = 1; i <= numberOfColumns; i++) {
+                    newRow.addElement(rs.getObject(i));
+                }
+
+                rows.addElement(newRow);
+            }
+
+            DefaultTableModel model = new DefaultTableModel(rows, columnNames) {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    if( cols.contains( new Integer(column) ) && rzad == row)
+                        return true;
+                    else return false;
+                }
+            };
+
+            return model;
         } catch (Exception e) {
             e.printStackTrace();
 

@@ -9,43 +9,86 @@ new FormModel {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {space :::p, comp scrollPane1:::p:724:p, space ::145:x}}"
-					"$verticalGroup": "par l {seq t {space ::46:x, comp scrollPane1:::p:549:p, space :::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp scrollPane1:::p:724:p, space :p:29:p, par l {comp addButton:::::x, comp editButton:::::x, comp deleteButton_Elem::l::116:x, comp deleteButton_Zam::l::116:x, comp viewButton::l::116:x, comp editButton_Elem::l::116:x, comp addButon_Elem::l::116:x}}, seq l {comp zamowieniaBox:::p:218:p, space u:::p, comp returnButton:::p::p, space s:::p, comp label1:::p::p, space :::p, comp fromTextField:::p:80:p, space :::p, comp label2:::p::p, space :::p, comp toTextField:::p:82:p, space s:::p, comp filterButton:::p:91:p, space u:::p, comp button1:::p:105:p}}, space :p:0:p}}"
+					"$verticalGroup": "par l {seq t {space :::x, par b {comp zamowieniaBox::b:p::p, comp returnButton::b:p::p, comp label1::b:p::p, comp label2::b:p::p, comp fromTextField::b:p::p, comp toTextField::b:p::p, comp filterButton::b:p::p, comp button1::b:p::p}, space s:::p, par l {seq {comp viewButton:::p::p, space :::p, comp deleteButton_Zam:::p::p, space :::p, comp editButton:::p::p, space :::p, comp addButton:::p::p, space :::p, comp deleteButton_Elem:::p::p, space u:::p, comp editButton_Elem:::p::p, space :::p, comp addButon_Elem:::p::p}, comp scrollPane1::l:p:587:p}, space :p:17:p}}"
 				} ) {
 					name: "contentPanel"
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
+						addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "scrollPane1MouseClicked", true ) )
+						addEvent( new FormEvent( "java.awt.event.KeyListener", "keyTyped", "scrollPane1KeyTyped", true ) )
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "mainTable"
 						} )
 					} )
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "Center"
-				} )
-				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0:1.0, 80, 80"
-					"$rowSpecs": "0"
-					"$hGap": 5
-					"$vGap": 5
-				} ) {
-					name: "buttonBar"
-					"border": new javax.swing.border.EmptyBorder( 12, 0, 0, 0 )
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "okButton"
-						"text": "OK"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 1
-						"gridy": 0
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "zamowieniaBox"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "zamowieniaBoxActionPerformed", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "cancelButton"
-						"text": "Cancel"
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"gridx": 2
-						"gridy": 0
+						name: "returnButton"
+						"text": "Powrót"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "addButton"
+						"text": "Dodaj"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "editButton"
+						"text": "Edytuj"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "editButtonActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "deleteButton_Zam"
+						"text": "Usuń"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "deleteButtonActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "Od:"
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "Do:"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "button1"
+						"text": "Wyczyść"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button1ActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "fromTextField"
+						"text": "YYYY-MM-DD"
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "toTextField"
+						"text": "YYYY-MM-DD"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "filterButton"
+						"text": "Zastosuj"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filterButtonActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "deleteButton_Elem"
+						"text": "Usuń"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "deleteButton_ElemActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "viewButton"
+						"text": "Zobacz"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "viewButtonActionPerformed", true ) )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "editButton_Elem"
+						"text": "Edytuj"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "addButon_Elem"
+						"text": "Dodaj"
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "South"
+					"value": "North"
 				} )
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
@@ -58,14 +101,17 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItem1"
 						"text": "Zapisz parametry połączenia"
+						"enabled": false
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItem2"
 						"text": "Wczytaj parametry połączenia"
+						"enabled": false
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItem3"
 						"text": "Zapisz widok do pliku HTML"
+						"enabled": false
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItem4"
@@ -97,22 +143,27 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "m_Manage_zamin"
 						"text": "Zamówienia wejściowe"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "m_Manage_zaminActionPerformed", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "m_Manage_zamout"
 						"text": "Zamówienia wyjściowe"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "m_Manage_zamoutActionPerformed", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "m_Manage_kategorie"
 						"text": "Kategorie"
+						"enabled": false
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "m_Manage_czesci"
 						"text": "Części"
+						"enabled": false
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "m_Manage_lokaliz"
 						"text": "Lokalizacje"
+						"enabled": false
 					} )
 					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
 						name: "menu2"
@@ -120,14 +171,17 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JMenuItem" ) {
 							name: "m_Manage_pracownicy"
 							"text": "Pracownicy"
+							"enabled": false
 						} )
 						add( new FormComponent( "javax.swing.JMenuItem" ) {
 							name: "m_Manage_klienci"
 							"text": "Klienci"
+							"enabled": false
 						} )
 						add( new FormComponent( "javax.swing.JMenuItem" ) {
 							name: "m_Manage_dostawcy"
 							"text": "Dostawcy"
+							"enabled": false
 						} )
 					} )
 				} )
@@ -137,14 +191,17 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItem12"
 						"text": "Zamówienia zrealizowane"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuItem12ActionPerformed", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "menuItem13"
 						"text": "Zamówienia do realizacji"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "menuItem13ActionPerformed", true ) )
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "menuItem14"
+						name: "fakturaMenuitem"
 						"text": "Faktura zamówienia"
+						"enabled": false
 					} )
 				} )
 			}
