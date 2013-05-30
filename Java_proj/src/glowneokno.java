@@ -20,7 +20,14 @@ public class glowneokno extends JFrame {
         setTitle("Magazyn BD2 2013");
         initComponents();
         this.setVisible(true);
-        baza = new JDBC("Maciek","Maciek","localhost","3306","bd2-baza");
+        //baza = new JDBC("Maciek","Maciek","localhost","3306","bd2-baza");
+        /**
+         * Interfejs phpMyAdmin dostępny pod adresem:
+         * https://sv18.vipserv.org:3010/phpmyadmin5/
+         *
+         * login i hasło jak w połączeniu poniżej:
+         */
+        baza = new JDBC("makciook_bd2", "Maciek", "mysql-788899.vipserv.org", "3306", "makciook_bd2");
         returnButton.setVisible(false);
         deleteButton_Elem.setVisible(false);
         editButton_Elem.setVisible(false);
@@ -35,6 +42,7 @@ public class glowneokno extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         try {
+            /** default */
             String q = "SELECT zw.Id, Data, FORMAT(wartosc*100,2) AS Wartosc, zrealizowane, dostawca_Regon AS Dostawca, CONCAT(pr.Imie, CONCAT(' ', pr.Nazwisko)) AS Pracownik FROM zamowienia_wej zw" +
                     " JOIN pracownik pr ON pr.Pesel = zw.pracownik_pesel" +
                     " ORDER BY Id ASC";
@@ -53,111 +61,8 @@ public class glowneokno extends JFrame {
             /** First click on table **/
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() == 2) {
-                    /*JTable target = (JTable)e.getSource();
-                    int row = target.getSelectedRow();
-                    try {
-                        String q = "SELECT zw.ID As 'NR zamówienia', pzw.Ilosc AS Ilosc, pzw.czesci_Id AS 'Numer czesci', FORMAT(cz.wartosc*pzw.Ilosc*100,2) AS Wartosc"+
-                                " FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" zw " +
-                                " JOIN pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" pzw ON zw.Id=pzw.zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+"_Id" +
-                                " JOIN czesci cz ON cz.Id = pzw.czesci_Id" +
-                                //" JOIN "+kl_zam[zamowieniaBox.getSelectedIndex()]+" kl ON zw."+kl_zam[zamowieniaBox.getSelectedIndex()]+" = kl.Regon"+
-                                " WHERE zw.Id="+target.getValueAt(row,0);
-                        if(!fromTextField.getText().equals("YYYY-MM-DD"))
-                            q += " AND zw.Data > '"+fromTextField.getText()+"'";
-                        if(!toTextField.getText().equals("YYYY-MM-DD"))
-                            q += " AND zw.Data < '"+toTextField.getText()+"'";
-                        System.out.println(q);
-                        baza.executeQuery(q);
-                        mainTable.setModel(baza.getAsTableModel());
-
-                        returnButton.setVisible(true);
-                        tableEnable(false);
-                    }catch(Exception ex) {
-                        ex.printStackTrace();
-                    }  */
-
 
                 }
-
-               /* Random r = new Random();
-                String[] prac = {"11111111111", "11122233300","91919112123", "99999999999"}     ;
-                String[] klient = {"000000000", "111111111" ,"123123123"} ;
-                String[] dostawca = {"012603008", "015071377", "114544561", "215601032","316353381"}    ;
-
-                for(int i = 1; i < 1000; ++i) {
-                    try {
-                        int x = r.nextInt(100);
-                        int y= r.nextInt(30)+70;
-                        String q = "INSERT INTO zamowienia_wej VALUES("+i+",DATE_ADD('2012-01-01', INTERVAL "+i+" DAY),'"+dostawca[i%dostawca.length]+"','"+prac[i%prac.length]+"',"+y+","+i+",NULL)";
-                        System.out.println(q);
-                        baza.executeUpdate(q);
-                    } catch(Exception x1) { System.out.println("\t"+x1.getMessage());}
-                }
-
-                for(int i = 1; i < 10000; ++i) {
-                    try {
-                        int x = r.nextInt(100);
-                        int y = r.nextInt(30918)+1;
-                        int z = r.nextInt(1000);
-                        String q = "INSERT INTO pozycje_zam_wej VALUES("+x+","+y+","+z+")";
-                        System.out.println(q);
-                        baza.executeUpdate(q);
-                    } catch(Exception x1) {}
-                }      */
-
-                    /*for(int i = 0; i < 1000; ++i) {
-                        try {
-                            int x = r.nextInt(100);
-                            int y= r.nextInt(30)+70;
-                            String q = "INSERT INTO zamowienia_wyj VALUES("+i+",DATE_ADD('2012-01-01', INTERVAL "+i+" DAY),"+i+","+klient[i%klient.length]+","+prac[i%prac.length]+","+y+")";
-                            System.out.println(q);
-                            baza.executeUpdate(q);
-                        } catch(Exception x1) {}
-                    }
-
-                    for(int i = 0; i < 1000; ++i) {
-                        try {
-                            int x = r.nextInt(100);
-                            int y = r.nextInt(30918)+1;
-                            int z = r.nextInt(20);
-                            String q = "INSERT INTO pozycje_zam_wyj VALUES("+x+","+y+","+z+")";
-                            System.out.println(q);
-                            baza.executeUpdate(q);
-                        } catch(Exception x1) {}
-                    }*/
-                /*String kategorie[] = {"Alkomaty", "Anteny", "Bagażniki", "Blokady", "Chlapacze", "Dywaniki", "Chłodzenie silnika", "Części karoserii", "Filtry", "Felgi", "Ogrzewanie", "Oświetlenie", "Silniki", "Tuning", "Zapłon", "Układ hamulcowy", "Układ napędowy", "Układ paliwowy", "Układ wydechowy", "Wyposażenie wnętrza", "Zawieszenie"};
-
-
-                try {
-                    for(int i = 98; i<100000; ++i) {
-                        int x = r.nextInt(22)+1;
-                        System.out.println("x:"+x);
-                        String q = "INSERT INTO czesci VALUES(NULL," + r.nextInt(1000)+","+r.nextInt(1000)+","+x+","+r.nextDouble()+")";
-                        System.out.println(q);
-                        baza.executeUpdate(q);
-                    }
-                } catch(Exception x1) {}
-
-                try {
-                   String[] ulice = {"Kiepury","Jana","Kilińskiego","Jana","Klonowicza","Sebastiana","Kmicica","Andrzeja","Kochanowskiego","Jana","Kołłątaja","Hugona","Komeńskiego","Jana","Amosa,","Konopnickiej","Marii","Konstytucji","3","Maja","Korcza","Teodora","Korczaka","Janusza","Kordeckiego","Augustyna","Korfantego","Wojciecha","Kosmonautów","Kossaka","Juliusza","Kosynierów","Kościelna","Kościuszki","Tadeusza","Kowalskiego","Rocha","Kraszewskiego","","Ignacego","Krasińskiego","Zygmunta,","Kręta","Królowej","Jadwigi","Krótka","Kruczkowskiego","Leona","Kryłowa","Iwana","Krzyckiego","Andrzej","Krzywa","Kudlli","Mieczysława","Kujawska","Kurpińskiego","Karola","Kurkowa","Kubańska","Kwiatowa"};
-                    for(int i = 2; i<ulice.length; ++i) {
-                        String q = "INSERT INTO dostawca VALUES('Dostawca"+i+"','ul. "+ulice[i]+" "+r.nextInt()+"','"+r.nextInt(8)+1+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+r.nextInt(9)+"')";
-                        System.out.println(q);
-                        baza.executeUpdate(q);
-                    }
-                } catch(Exception x1) {}
-
-                try {
-                    String[] ulice = {"Kiepury","Jana","Kilińskiego","Jana","Klonowicza","Sebastiana","Kmicica","Andrzeja","Kochanowskiego","Jana","Kołłątaja","Hugona","Komeńskiego","Jana","Amosa,","Konopnickiej","Marii","Konstytucji","3","Maja","Korcza","Teodora","Korczaka","Janusza","Kordeckiego","Augustyna","Korfantego","Wojciecha","Kosmonautów","Kossaka","Juliusza","Kosynierów","Kościelna","Kościuszki","Tadeusza","Kowalskiego","Rocha","Kraszewskiego","","Ignacego","Krasińskiego","Zygmunta,","Kręta","Królowej","Jadwigi","Krótka","Kruczkowskiego","Leona","Kryłowa","Iwana","Krzyckiego","Andrzej","Krzywa","Kudlli","Mieczysława","Kujawska","Kurpińskiego","Karola","Kurkowa","Kubańska","Kwiatowa"};
-                    for(int i = 70; i<100; ++i) {
-
-                        String q ="INSERT INTO lokalizacja VALUES("+i+",'Lokalizacja "+i+"','"+ulice[i%ulice.length]+" "+r.nextInt(40)+"/"+r.nextInt(100)+"')";
-                        System.out.println(q);
-                        baza.executeUpdate(q);
-
-                    }
-                } catch(SQLException x1) {}*/
-
 
             }
         });
@@ -275,7 +180,7 @@ public class glowneokno extends JFrame {
     }
 
     private void menuItem12ActionPerformed(ActionEvent e) {
-        /** Raporty **/
+        /** Raport zrealizowane **/
         int ind = this.zamowieniaBox.getSelectedIndex();
         try {
             String q = "SELECT zw.Id, Data, FORMAT(wartosc*100,2) AS Wartosc, zrealizowane, "+kl_zam[zamowieniaBox.getSelectedIndex()]+"_Regon AS "+kl_zam[zamowieniaBox.getSelectedIndex()]+", CONCAT(pr.Imie, CONCAT(' ', pr.Nazwisko)) AS Pracownik FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" zw" +
@@ -299,7 +204,7 @@ public class glowneokno extends JFrame {
     }
 
     private void menuItem13ActionPerformed(ActionEvent e) {
-
+        /** raport niezrealizowane */
         int ind = this.zamowieniaBox.getSelectedIndex();
         try {
             String q = "SELECT zw.Id, Data, FORMAT(wartosc*100,2) AS Wartosc, zrealizowane, "+kl_zam[zamowieniaBox.getSelectedIndex()]+"_Regon AS "+kl_zam[zamowieniaBox.getSelectedIndex()]+", CONCAT(pr.Imie, CONCAT(' ', pr.Nazwisko)) AS Pracownik FROM zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" zw" +
@@ -338,6 +243,7 @@ public class glowneokno extends JFrame {
     }
 
     private void deleteButtonActionPerformed(ActionEvent e) {
+        /** usuwnaie */
         Object id = mainTable.getValueAt(mainTable.getSelectedRow(), 0);   // get id
         try {
             baza.executeUpdate("DELETE FROM pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" " +
@@ -359,6 +265,7 @@ public class glowneokno extends JFrame {
     }
 
     private void deleteButton_ElemActionPerformed(ActionEvent e) {
+        /** usuwanie elementow zamowienia */
         Object ilosc = mainTable.getValueAt(mainTable.getSelectedRow(), 1);   // get id;
         Object czesci_Id = mainTable.getValueAt(mainTable.getSelectedRow(),2);
         Object zwejid = mainTable.getValueAt(mainTable.getSelectedRow(),0);
@@ -380,6 +287,7 @@ public class glowneokno extends JFrame {
     }
 
     private void editButtonActionPerformed(ActionEvent e) {
+        /** edytuj */
         if(editButton.getText().equals("ZAKONCZ")) {
             editButton.setText("Edytuj");
             String q = "UPDATE zamowienia_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" SET Data = '"+mainTable.getValueAt(mainTable.getSelectedRow(),1)+"'" +
@@ -419,6 +327,7 @@ public class glowneokno extends JFrame {
     }
 
     private void viewButtonActionPerformed(ActionEvent e) {
+        /** wyswietl zamowienie */
         int row = mainTable.getSelectedRow();
         try {
             String q = "SELECT zw.ID As 'NR zamówienia', pzw.Ilosc AS Ilosc, pzw.czesci_Id AS 'Numer czesci', FORMAT(cz.wartosc*pzw.Ilosc*100,2) AS Wartosc"+
@@ -443,6 +352,7 @@ public class glowneokno extends JFrame {
     }
 
     private void editButton_ElemActionPerformed(ActionEvent e) {
+        /** edytuj element */
         if(editButton_Elem.getText().equals("ZAKONCZ")) {
             editButton_Elem.setText("Edytuj");
             String q = "UPDATE pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" SET Ilosc=" + mainTable.getValueAt(mainTable.getSelectedRow(),1)+
@@ -475,6 +385,7 @@ public class glowneokno extends JFrame {
     }
 
     private void addButtonActionPerformed(ActionEvent e) {
+        /** dodaj zamowienie */
         if(addButton.getText().equals("Dodaj"))
         {
             try {
@@ -526,6 +437,7 @@ public class glowneokno extends JFrame {
     }
 
     private void addButon_ElemActionPerformed(ActionEvent e) {
+        /** dodaj element zamowienia */
         String q = "INSERT INTO pozycje_zam_"+sql_zam[zamowieniaBox.getSelectedIndex()]+" VALUES("+mainTable.getValueAt(mainTable.getSelectedRow(),1)+"," +
                 ""+mainTable.getValueAt(mainTable.getSelectedRow(),2)+"," +
                 ""+mainTable.getValueAt(mainTable.getSelectedRow(),0)+")";
